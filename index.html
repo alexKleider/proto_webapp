@@ -1,0 +1,35 @@
+<!DOCTYPE html
+<html lang="en">
+<head>
+    <meta charset='utf-8' />
+    <title>"Utility Debugging"</title>
+</head>  <!--<^Boiler plate stuff.^-->
+<body>
+
+    <!--File name and content retrieval button.
+    js code must addEventListener to this element and
+    have a global container into which to put the file
+    content-->
+    <div id="fileGetter">
+    <input type="file" id="fileinput" />
+    </div>
+
+    <!--File content display area:--> 
+    <h4>File Content</h4>
+    <div id="fileContent"> </div>
+
+    <!--Typical Action button:
+    This one triggers <update()>, is labeled 'click me'
+    and an html area with id="magic" is provided as a
+    place update() can populate-->
+    <button onclick="update()">click me</button>
+    <p id="magic"> </p>
+
+    <!--An action button to trigger program logic.-->
+    <button
+    onclick="processData()">Calculate</button>
+    <div id="resultsPage">Results go here.</div>
+
+</body>
+<script src="script.js"></script>
+</html>
