@@ -3,13 +3,16 @@
 <head>
     <meta charset='utf-8' />
     <title>"Utility Debugging"</title>
-</head>  <!--<^Boiler plate stuff.^-->
+</head>  <!--<Above is the boiler plate stuff.^-->
 <body>
 
-    <!--File name and content retrieval button.
-    js code must addEventListener to this element and
-    have a global container into which to put the file
-    content-->
+    <!--<input type="file"> element: effectively a button.
+    The script presents the file system for user selection.
+    Js code must 'addEventListener' to this element and
+    within the handler specified: assign content to a
+    pre-declared global container- in accompanying code
+    the listener is readSingleFile() and the container 
+    is SG.fileContent.-->
     <div id="fileGetter">
     <input type="file" id="fileinput" />
     </div>
@@ -27,9 +30,15 @@
 
     <!--An action button to trigger program logic.-->
     <button
-    onclick="processData()">Calculate</button>
-    <div id="resultsPage">Results go here.</div>
+    onclick="calculate()">Calculate</button>
+
+    <!--Container for result data.-->
+    <h4>Results</h4>
+    <div id="results">Results go here.</div>
 
 </body>
+<!--<script src="jquery-3.0.0.js"></script>-->
+<script src="jquery-3.0.0.js"></script>
 <script src="script.js"></script>
 </html>
+
