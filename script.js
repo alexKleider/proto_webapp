@@ -2,28 +2,58 @@
 
 // SG is the object containing script globals.
 var SG = {
-    // For the file reading code:
-    nonError: "No errors detected.",
-    dataFileName: "Unassigned as yet.",
-    fileContent: "JSON data expected; not retrieved as yet.",
-    errorReport: "No errors detected.",
-    jsonData: {},
-    // Unused- here solely to provide last comma free entry.
-    dummyNoCommaItem: undefined
-    };
+nonError: "No errors detected.",
+dataFileName: undefined,
+dataFileNameDefault: "Unassigned.",
+fileContent: undefined,
+fileContentDefault: "JSON data expected; not retrieved as yet.",
+resultsContent: undefined,
+resultsContentDefault: "Results unavailable.",
+errorReport: "No errors detected.",
+jsonData: undefined,
+// Unused- here solely to provide last comma free entry.
+dummyNoCommaItem: undefined
+};
+
+//Main program logic:
+function processData(){
+    console.log("Data available for processing.");
+}
 
 //Helper functions:
 function showFileContent(){
-    var contentElement = document.getElementById("fileContent");
-    contentElement.textContent = SG.fileContent;
+    var el = document.getElementById("fileContent");
+    if (SG.fileContent){
+        el.textContent = SG.fileContent;
+    }else{
+        el.textContent = SG.fileContentDefault;
+    }
 }
 
-function getStringFromObject(collection){
-    var collector = [];
-    for (var key in collection){
-        collector.push(key + ": " + collection[key]);
+function showResults(){
+    var el = document.getElementById("results");
+    if (SG.resultsContent){
+        el.innerHTML =  SG.resultsContent;
+    }else{
+        el.textContent = SG.resultsContentDefault;
     }
-    return collector.join("\n");
+}
+
+function getStringFromObject(json){
+    // Specific for an array of objects.
+    var collector = [];
+    for (var i = 0; i<json.length; i++){
+        if (i>0){
+            collector.push("");
+        }
+        keys = Object.keys(json[i]);
+        console.log(keys);
+        for (var j = 0; j<keys.length; j++){
+            console.log(json[i][keys[j]]);
+            collector.push(keys[j] + ": " + json[i][keys[j]]);
+        }
+    }
+    return collector.join("<br>");
 }
 
 // Typical button triggered function:
@@ -40,7 +70,7 @@ function update(){
 // File Reading Code:
 
 // Wrapper function /w check for File API support.
-// Not being used- needs debugging.
+// NOT BEING USED!- needs debugging.
 function getFileContent(evt){
     if (window.File &&
         window.FileReader &&
@@ -65,21 +95,25 @@ AND a global container SG.fileContent into which the file
 content is stored.  */
 
 function readSingleFile(evt) {
-//Retrieve the first (and only!) File from the FileList object
-//and put its content into SG.fileContent.
+//Retrieve the first (and only!) file from the FileList object,
+//and put its content into SG.fileContent and display it.
     var f = evt.target.files[0]; 
 
     if (f) {
         var r = new FileReader();
         r.onload = function(e){
             var content = e.target.result;
+            //Capture the file content.
             SG.fileContent = content;
+            //Display the file content.
             showFileContent();
             //^^^Content of the file assigned to this global.
             console.log("File content has been assigned.");
        }
        r.readAsText(f);
     }else{ 
+      SG.fileContent = undefined;
+      showFileContent;
       alert("Failed to load file");
       console.log("Failed to load file");
     }
@@ -94,36 +128,25 @@ document.getElementById('fileinput').addEventListener('change',
 
 function dataOk(){
     // Data is expected to be json text.
-    var container = document.getElementById("results");
-    container.textContent = SG.fileContent;
-    console.log("File content has been put onto the page.");
     try{
-    var json = JSON.parse(SG.fileContent);
-    console.log("Parsing seems to be fine.");
+        var json = JSON.parse(SG.fileContent);
     }
     catch(e){
         if (e instanceof SyntaxError){
             SG.errorReport = "SyntaxError occurred.";
             console.log("Parsing error occurred.");
+            SG.jsonData = undefined;
+            SG.results = undefined;
+            showResults();
             return false;
         }else{throw(e);}
-    }
-    console.log("File content has been parsed.");
+    } //End of catch statement.
+    console.log("Parsing seems to be fine.");
+    SG.errorReport = undefined;
     SG.jsonData = json;
-    for (key in json){
-        console.log(getStringFromObject(json[key]));
-        }
-    console.log(getStringFromObject(json));
-    console.log("The json[0] part is " + json[0]);
+    SG.resultsContent = getStringFromObject(json);
+    showResults();
     return true;
-}
-
-function showData(){
-    var dataElement = document.getElementById("results");
-    dataElement.textContent = (
-            "Result should be JSON: " + String(SG.jsonData));
-//          "Item 2, date value is " + SG.jsonData[2]["date"]);
-//          "Result should be JSON: " + SG.jsonData);
 }
 
 function clearError(){
@@ -138,7 +161,7 @@ function reportError(){
 function calculate(){
     showFileContent();
     if (dataOk()){
-        showData();
+        processData();
     }else{
         reportError();
     }
