@@ -167,7 +167,3 @@ function calculate(){
     }
 }
 
-// to do:
-// git remote add origin \
-// https://github.com/alexKleider/utilCalc_webapp.git
-// git push -u origin master
